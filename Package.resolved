@@ -1,5 +1,5 @@
 {
-  "originHash" : "c33e766b95e0af86f988e2aa911e009121bcee48d45ffded750a73229dc35fee",
+  "originHash" : "ebb9dd33bb05670eb68f0d8a9e10d3a3204ccab550209d927761e6f0dbf618ea",
   "pins" : [
     {
       "identity" : "cryptoswift",
@@ -44,6 +44,15 @@
       "state" : {
         "revision" : "86d44caa3d8e53e66158cfc47398959ce2006bcf",
         "version" : "1.5.0"
+      }
+    },
+    {
+      "identity" : "udfmacros",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/urlaunched-com/UDFMacros.git",
+      "state" : {
+        "branch" : "feature/sensitiveActionMacro",
+        "revision" : "001196817a51bff26934e15a2665b9093cc818e8"
       }
     }
   ],
