@@ -10,29 +10,25 @@ public class UDFFileLogger: ActionLogger, @unchecked Sendable {
   public var actionDescriptor: ActionDescriptor
   
   private let dispatchQueue = DispatchQueue(label: "udf.file.logger")
-  private var debouncer: Debouncer<String>?
-  private var fileLogger: FileLogger
+  private var batcher: Batcher?
+  private var fileLogger: FileWritable
   
-  public init(
-    fileURL: URL,
-    maxFileSizeInMB: UInt,
+  init(
     intervalToSync: TimeInterval = 1,
-    filters: [ActionFilter],
+    fileLogger: FileWritable,
+    filters: [ActionFilter] = [],
     actionDescriptor: ActionDescriptor = StringDescribingActionDescriptor()
   ) throws {
-    let maxFileSizeInBytes = UInt64(maxFileSizeInMB) * 1024 * 1024
-    
-    self.debouncer = Debouncer<String>(intervalToSync, on: dispatchQueue)
+    self.batcher = Batcher(
+      interval: intervalToSync,
+      maxSize: 2 * 1024 * 1024,
+      on: dispatchQueue
+    )
     self.actionFilters = filters
     self.actionDescriptor = actionDescriptor
-    self.fileLogger = try FileLogger(fileURL: fileURL, maxFileSize: 1024)
+    self.fileLogger = fileLogger
     
-    debouncer?.on { [weak self] strings in
-      let string = strings.joined(separator: "\n")
-      try? self?.fileLogger.append(string: string)
-      
-      self?.debouncer?.clear()
-    }
+    self.batcher?.delegate = self
   }
   
   public func log(_ action: LoggingAction, description: String) {
@@ -41,20 +37,21 @@ public class UDFFileLogger: ActionLogger, @unchecked Sendable {
       descrition = sensitiveAction.plainDescription
     }
     
-    debouncer?.insert(descrition)
+    if let data = descrition.data(using: .utf8) {
+      batcher?.collect(data)
+    }
+  }
+  
+  init() {
+    self.actionFilters = []
+    self.actionDescriptor = StringDescribingActionDescriptor()
+    self.fileLogger = EmptyLogger()
   }
 }
 
-public extension ActionLogger where Self == UDFFileLogger {
-  static func fileLogger(
-    fileURL: URL,
-    maxFileSizeInMB: UInt,
-    extraFilters: [ActionFilter] = []
-  ) -> ActionLogger? {
-    try? UDFFileLogger(
-      fileURL: fileURL,
-      maxFileSizeInMB: maxFileSizeInMB,
-      filters: [.debugOnly] + extraFilters
-    )
+// MARK: - BatcherDelegate
+extension UDFFileLogger: BatcherDelegate {
+  func batcher(_ batcher: Batcher, didFlush data: Data) {
+    try? fileLogger.append(data: data)
   }
 }

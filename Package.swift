@@ -17,7 +17,8 @@ let package = Package(
     ],
     dependencies: [
       .package(url: "https://github.com/Maks-Jago/SwiftUI-UDF", from: "1.5.0"),
-      .package(path: "../UDFMacros")
+      .package(path: "../UDFMacros"),
+      .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.9.0")
     ],
     targets: [
         .target(
@@ -25,7 +26,14 @@ let package = Package(
             dependencies: [
               .product(name: "UDF", package: "SwiftUI-UDF"),
               .product(name: "UDFMacros", package: "UDFMacros"),
+              .product(name: "CryptoSwift", package: "CryptoSwift"),
             ]
+        ),
+        .testTarget(
+          name: "UDFFileLoggerTests",
+          dependencies: [
+            "UDFFileLogger",
+          ]
         ),
     ]
 )

@@ -7,14 +7,16 @@
 
 import Foundation
 
-public enum FileError: Error, Equatable, LocalizedError, Sendable {
+public enum UDFFileLoggerError: Error, Equatable, LocalizedError, Sendable {
   case isNotFile(url: URL)
   case invalidPermission(at: URL, filePermission: String)
   case creatingDirectoryFailed(at: URL)
   case creatingFileFailed(at: URL)
   case openingForWritingFailed(at: URL)
-  case deletingFailed(at: URL)
-  case internalFail
+  case readFailed(at: URL)
+  case deleteFailed(at: URL)
+  case missingParameters
+  case internalFailure
   
   public var errorDescription: String? {
     switch self {
@@ -28,10 +30,14 @@ public enum FileError: Error, Equatable, LocalizedError, Sendable {
         return "failed to create a file: \(url)"
       case .openingForWritingFailed(at: let url):
         return "failed to open a file for writing: \(url)"
-      case .deletingFailed(at: let url):
+      case .deleteFailed(at: let url):
         return "failed to delete a file: \(url)"
-      case .internalFail:
+      case .internalFailure:
         return "internal error"
+      case .missingParameters:
+        return "missing required parameters"
+      default:
+        return "file operation failed"
     }
   }
 }

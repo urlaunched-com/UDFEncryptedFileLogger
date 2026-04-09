@@ -10,7 +10,7 @@ import Foundation
 protocol FileWritable: Sendable {
   var fileURL: URL { get }
   
-  func append(string: String) throws
+  func append(data: Data) throws
   func rewrite(data: Data) throws
 }
 
