@@ -4,15 +4,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "UDFFileLogger",
+    name: "UDFEncryptedFileLogger",
     platforms: [
       .iOS(.v16),
       .macOS(.v11)
     ],
     products: [
         .library(
-            name: "UDFFileLogger",
-            targets: ["UDFFileLogger"]
+            name: "UDFEncryptedFileLogger",
+            targets: ["UDFEncryptedFileLogger"]
         )
     ],
     dependencies: [
@@ -22,7 +22,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "UDFFileLogger",
+            name: "UDFEncryptedFileLogger",
             dependencies: [
               .product(name: "UDF", package: "SwiftUI-UDF"),
               .product(name: "UDFMacros", package: "UDFMacros"),
@@ -30,9 +30,9 @@ let package = Package(
             ]
         ),
         .testTarget(
-          name: "UDFFileLoggerTests",
+          name: "UDFEncryptedFileLoggerTests",
           dependencies: [
-            "UDFFileLogger",
+            "UDFEncryptedFileLogger",
           ]
         ),
     ]
