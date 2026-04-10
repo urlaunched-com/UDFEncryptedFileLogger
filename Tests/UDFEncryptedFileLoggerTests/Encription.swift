@@ -6,7 +6,7 @@
 //
 
 import Testing
-@testable import UDFFileLogger
+@testable import UDFEncryptedFileLogger
 import Foundation
 import CryptoSwift
 

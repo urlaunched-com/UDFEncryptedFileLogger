@@ -1,5 +1,5 @@
 //
-//  LoggerRegistry.swift
+//  ChiperFactory.swift
 //  UDFFileLogger
 //
 //  Created by Bogdan Petkanych on 09.04.2026.
@@ -7,8 +7,8 @@
 import Foundation
 import CryptoSwift
 
-enum StreamProcessorFactory {
-  static func processor(
+enum ChiperFactory {
+  static func chiper(
     for method: EncryptionMethod,
     fileURL: URL? = nil,
     key: String? = nil
@@ -32,5 +32,4 @@ enum StreamProcessorFactory {
         return try AESCipher.CBCStreamProcessor(password: key, iv: ivData.toHexString())
     }
   }
-  
 }

@@ -6,16 +6,19 @@ import Foundation
 import UDFMacros
 
 public class UDFFileLogger: ActionLogger, @unchecked Sendable {
+  
+  // MARK: - ActionLogger
   public var actionFilters: [ActionFilter]
   public var actionDescriptor: ActionDescriptor
   
+  // MARK: - Private properties
   private let dispatchQueue = DispatchQueue(label: "udf.file.logger")
   private var batcher: Batcher?
-  private var fileLogger: FileWritable
+  private var logger: Loggable
   
   init(
     intervalToSync: TimeInterval = 1,
-    fileLogger: FileWritable,
+    logger: Loggable,
     filters: [ActionFilter] = [],
     actionDescriptor: ActionDescriptor = StringDescribingActionDescriptor()
   ) throws {
@@ -26,7 +29,7 @@ public class UDFFileLogger: ActionLogger, @unchecked Sendable {
     )
     self.actionFilters = filters
     self.actionDescriptor = actionDescriptor
-    self.fileLogger = fileLogger
+    self.logger = logger
     
     self.batcher?.delegate = self
   }
@@ -45,13 +48,17 @@ public class UDFFileLogger: ActionLogger, @unchecked Sendable {
   init() {
     self.actionFilters = []
     self.actionDescriptor = StringDescribingActionDescriptor()
-    self.fileLogger = EmptyLogger()
+    self.logger = EmptyLogger()
   }
 }
 
 // MARK: - BatcherDelegate
 extension UDFFileLogger: BatcherDelegate {
   func batcher(_ batcher: Batcher, didFlush data: Data) {
-    try? fileLogger.append(data: data)
+    do {
+      try logger.log(data: data)
+    } catch {
+      print("[\(Self.self)] Log failed — \(error.localizedDescription)")
+    }
   }
 }

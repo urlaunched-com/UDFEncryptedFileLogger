@@ -38,7 +38,9 @@ final class Batcher: @unchecked Sendable {
     }
     
     if shouldFlush {
-      onFlush()
+      queue.async { [weak self] in
+        self?.onFlush()
+      }
       return
     }
     dispatchDebounce()
