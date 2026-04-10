@@ -1,12 +1,11 @@
 //
-//  StorageError.swift
+//  ChiperError.swift
 //  UDFEncryptedFileLogger
 //
 //  Created by Bogdan Petkanych on 10.04.2026.
 //
 
-enum StorageError: Error {
-  case sizeOverflow
+enum ChiperError: Error {
   case initializationFailed
-  case invalidSizeParameter
+  case missingParameters
 }

@@ -10,11 +10,11 @@ import Foundation
 /// Usage for testing purpose
 struct MemoryStorage: DataStorable {
   private(set) var collectedData: Data
-  let maxSize: UInt64
+  let maxSize: Int
   
-  init(maxSize: UInt64, data: Data = Data()) {
+  init(maxSize: Int, data: Data = Data()) {
     self.maxSize = maxSize
-    self.collectedData = data
+    self.collectedData = data.prefix(maxSize)
   }
   
   var size: Int {
@@ -25,7 +25,7 @@ struct MemoryStorage: DataStorable {
 // MARK: - DataStorable
 extension MemoryStorage: DataWritable {
   mutating func append(data: Data) throws {
-    if UInt64(size + data.count) > maxSize {
+    guard size + data.count <= maxSize else {
       throw StorageError.sizeOverflow
     }
     
@@ -47,8 +47,15 @@ extension MemoryStorage: DataCloseable {
 // MARK: - DataCompactor
 extension MemoryStorage: DataCompactor {
   mutating func reduce(size releaseByteSize: Int) throws {
-    let newData = collectedData.subdata(in: releaseByteSize..<collectedData.count)
+    guard releaseByteSize >= 0 else {
+      throw StorageError.invalidSizeParameter
+    }
+    guard !collectedData.isEmpty else {
+      return
+    }
     
+    let startPosition = max(0, min(releaseByteSize, collectedData.count - 1))
+    let newData = collectedData.subdata(in: startPosition..<collectedData.count)
     try rewrite(data: newData)
   }
 }

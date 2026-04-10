@@ -34,7 +34,7 @@ final class Batcher: @unchecked Sendable {
   func collect(_ data: Data) {
     let shouldFlush = lock.withLock {
       collectedData.append(data)
-      return collectedData.count >= maxSize
+      return collectedData.count > maxSize
     }
     
     if shouldFlush {

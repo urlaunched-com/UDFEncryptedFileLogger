@@ -1,5 +1,5 @@
 //
-//  EnriptionMethod.swift
+//  EncryptionMethod.swift
 //  UDFFileLogger
 //
 //  Created by Bogdan Petkanych on 09.04.2026.

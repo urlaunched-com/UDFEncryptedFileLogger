@@ -54,7 +54,7 @@ extension AESCipher.CBCStreamProcessor {
       try FileManager.createFileIfNeeded(at: fileURL)
       try ivData.write(to: fileURL)
     } catch {
-      throw UDFFileLoggerError.creatingFileFailed(at: fileURL)
+      throw ChiperError.initializationFailed
     }
   }
 }

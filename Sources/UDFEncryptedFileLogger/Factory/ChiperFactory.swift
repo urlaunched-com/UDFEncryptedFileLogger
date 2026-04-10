@@ -18,7 +18,7 @@ enum ChiperFactory {
         return AESCipher.PassthroughStreamProcessor()
       case let .aesCBC(key):
         guard let fileURL else {
-          throw UDFFileLoggerError.missingParameters
+          throw ChiperError.missingParameters
         }
         
         let ivData = try? FileManager.default.read(at: fileURL, upToCount: AES.blockSize)
@@ -26,7 +26,7 @@ enum ChiperFactory {
           try AESCipher.CBCStreamProcessor.initialize(fileURL: fileURL)
         }
         guard let ivData = try? FileManager.default.read(at: fileURL, upToCount: AES.blockSize) else {
-          throw UDFFileLoggerError.readFailed(at: fileURL)
+          throw ChiperError.initializationFailed
         }
         
         return try AESCipher.CBCStreamProcessor(password: key, iv: ivData.toHexString())
