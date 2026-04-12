@@ -33,7 +33,7 @@ struct AESEncriptionTests {
     let data = try #require(logs.joined().data(using: .utf8))
     
     var encryptedData = try chiper.encode(data: data)
-    encryptedData = try chiper.finish()
+    encryptedData.append(try chiper.finish())
     let decryptedData = try chiper.decode(data: encryptedData)
     let decryptedText = (String(data: decryptedData, encoding: .utf8) ?? "")
       // Remove padding for successful string comparison

@@ -24,7 +24,7 @@ struct BatcherTests {
   }
   
   @Test("When collected data exceeds maximum size, batcher flushes data to delegate")
-  func flushesDataWhenBatcherReachesMaximumSize() {
+  func flushesDataWhenBatcherReachesMaximumSize() async throws  {
     let data = Data(repeating: 0x00, count: maxSize)
     batcher.collect(data)
     
@@ -32,6 +32,8 @@ struct BatcherTests {
     batcher.collect(appendedData)
     
     let expectedData = data + appendedData
+      
+    try await Task.sleep(for: .milliseconds(500))
     
     #expect(
       batcherDelegateWrapper.collectedData == expectedData,
