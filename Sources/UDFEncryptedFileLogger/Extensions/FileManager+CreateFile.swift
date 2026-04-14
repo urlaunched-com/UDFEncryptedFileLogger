@@ -8,7 +8,7 @@ import Foundation
 
 extension FileManager {
   @discardableResult
-  static func createFileIfNeeded(at url: URL) throws -> Bool {
+  static func createFileIfNeeded(at url: URL, permission: Int = 0o600) throws -> Bool {
     let fm = FileManager.default
     
     let directory = url.deletingLastPathComponent()
@@ -17,7 +17,14 @@ extension FileManager {
     }
 
     if !fm.fileExists(atPath: url.path) {
-      fm.createFile(atPath: url.path, contents: nil)
+      let attributes: [FileAttributeKey: Any] = [
+        .posixPermissions: permission,
+        .protectionKey: FileProtectionType.completeUntilFirstUserAuthentication
+      ]
+      let created = fm.createFile(atPath: url.path, contents: nil, attributes: attributes)
+      if !created {
+        throw FileError.creationFailed(url)
+      }
     }
     
     return fm.fileExists(atPath: url.path)

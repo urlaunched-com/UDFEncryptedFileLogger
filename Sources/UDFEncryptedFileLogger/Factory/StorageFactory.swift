@@ -14,8 +14,6 @@ enum StorageFactory {
     maxFileSizeInMB: Int
   ) throws -> DataStorable {
     let maxFileSize = Int(maxFileSizeInMB) * 1024 * 1024
-    try FileManager.createFileIfNeeded(at: fileURL)
-    
     return try FileStorage(fileURL: fileURL, maxFileSize: maxFileSize)
   }
 }

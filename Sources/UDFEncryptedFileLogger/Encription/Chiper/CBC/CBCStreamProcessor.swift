@@ -17,15 +17,13 @@ extension AESCipher {
       UInt64(AES.blockSize)
     }
     
-    init(
-      password: String,
-      iv: String = AES.randomIV(16).toHexString()
-    ) throws {
+    init(credentials: Credentials) throws {
       self.aes = try AES(
-        key: password.bytes,
-        blockMode: CBC(iv: iv.bytes),
+        key: credentials.key,
+        blockMode: CBC(iv: credentials.iv),
         padding: .zeroPadding
       )
+      
       self.enryptor = try aes.makeEncryptor()
       self.decryptor = try aes.makeDecryptor()
     }
@@ -35,26 +33,13 @@ extension AESCipher {
       return Data(encodedData)
     }
     
-    func finish() throws -> Data {
-      Data(try self.enryptor.finish())
-    }
-    
     func decode(data: Data) throws -> Data {
       let decodedData = try self.decryptor.update(withBytes: data.byteArray)
       return Data(decodedData)
     }
-  }
-}
-
-// MARK: - Static methods
-extension AESCipher.CBCStreamProcessor {
-  static func initialize(fileURL: URL) throws {
-    let ivData = Data(AES.randomIV(AES.blockSize))
-    do {
-      try FileManager.createFileIfNeeded(at: fileURL)
-      try ivData.write(to: fileURL)
-    } catch {
-      throw ChiperError.initializationFailed
+    
+    func finish() throws -> Data {
+      Data(try self.enryptor.finish())
     }
   }
 }

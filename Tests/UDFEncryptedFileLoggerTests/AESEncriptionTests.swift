@@ -17,8 +17,9 @@ struct AESEncriptionTests {
   init() throws {
     let key = "0123456789abcdef"
     let iv =  "abcdef9876543210"
+    let credentials = try AESCipher.Credentials(key, iv: iv.bytes)
     
-    chiper = try AESCipher.CBCStreamProcessor(password: key, iv: iv)
+    chiper = try AESCipher.CBCStreamProcessor(credentials: credentials)
   }
   
   @Test("Test encryption and decryption using AES-CBC method")

@@ -6,6 +6,5 @@
 //
 
 enum ChiperError: Error {
-  case initializationFailed
   case missingParameters
 }

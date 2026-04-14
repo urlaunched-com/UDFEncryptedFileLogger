@@ -20,15 +20,17 @@ public extension ActionLogger where Self == UDFFileLogger {
     extraFilters: [ActionFilter] = []
   ) -> ActionLogger? {
     do {
-      let chiper = try ChiperFactory.chiper(for: encryptionMethod, fileURL: fileURL)
+      try FileManager.createFileIfNeeded(at: fileURL, permission: 0o600)
       let storage = try StorageFactory.fileStorage(fileURL: fileURL, maxFileSizeInMB: maxFileSizeInMB)
-      
-      return try? UDFFileLogger(
+      let chiper = try ChiperFactory.chiper(for: encryptionMethod, fileURL: fileURL)
+      let logger = try UDFFileLogger(
         intervalToSync: 1,
         logger: SecureLogger(cipher: chiper, storage: storage),
-        filters: [.debugOnly] + extraFilters
+        filters: [.default] + extraFilters
       )
+      return logger
     } catch {
+      print("[UDFFileLogger] Failed to initialize logger: \(error.localizedDescription)")
       return nil
     }
   }

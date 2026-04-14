@@ -16,3 +16,7 @@ protocol StreamCipherable {
   func decode(data: Data) throws -> Data
   func finish() throws -> Data
 }
+
+protocol KeyValidatable {
+    static func validate(_ key: String) throws
+}

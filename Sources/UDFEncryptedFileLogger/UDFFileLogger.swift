@@ -58,7 +58,7 @@ extension UDFFileLogger: BatcherDelegate {
     do {
       try logger.log(data: data)
     } catch {
-      print("[\(Self.self)] Log failed — \(error.localizedDescription)")
+      print("[UDFFileLogger] Log failed:\(error.localizedDescription)")
     }
   }
 }

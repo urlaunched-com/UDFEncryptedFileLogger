@@ -20,16 +20,8 @@ enum ChiperFactory {
         guard let fileURL else {
           throw ChiperError.missingParameters
         }
-        
-        let ivData = try? FileManager.default.read(at: fileURL, upToCount: AES.blockSize)
-        if ivData == nil {
-          try AESCipher.CBCStreamProcessor.initialize(fileURL: fileURL)
-        }
-        guard let ivData = try? FileManager.default.read(at: fileURL, upToCount: AES.blockSize) else {
-          throw ChiperError.initializationFailed
-        }
-        
-        return try AESCipher.CBCStreamProcessor(password: key, iv: ivData.toHexString())
+        let credentials = try AESCipher.Credentials(key: key, fileURL: fileURL)
+        return try AESCipher.CBCStreamProcessor(credentials: credentials)
     }
   }
 }
