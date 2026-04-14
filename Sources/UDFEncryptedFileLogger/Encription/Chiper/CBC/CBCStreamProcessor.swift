@@ -34,7 +34,7 @@ extension AESCipher {
     }
     
     func decode(data: Data) throws -> Data {
-      let decodedData = try self.decryptor.update(withBytes: data.byteArray)
+      let decodedData = try self.decryptor.update(withBytes: data.byteArray, isLast: true)
       return Data(decodedData)
     }
     

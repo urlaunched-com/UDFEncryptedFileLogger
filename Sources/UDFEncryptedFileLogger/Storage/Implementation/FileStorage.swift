@@ -38,6 +38,7 @@ extension FileStorage: DataWritable {
       throw StorageError.sizeOverflow
     }
     
+    try fileHandle.seekToEnd()
     try fileHandle.write(contentsOf: data)
   }
   

@@ -11,6 +11,7 @@ enum StorageError: Error, LocalizedError {
   case sizeOverflow
   case initializationFailed
   case invalidSizeParameter
+  case utf8EncodingFailed
 
   var errorDescription: String? {
     switch self {
@@ -20,6 +21,8 @@ enum StorageError: Error, LocalizedError {
       return "Storage initialization failed"
     case .invalidSizeParameter:
       return "Invalid size parameter provided"
+    case .utf8EncodingFailed:
+      return "Failed to encode string to UTF8"
     }
   }
 }

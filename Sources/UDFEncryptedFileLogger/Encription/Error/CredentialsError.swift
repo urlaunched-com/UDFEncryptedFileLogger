@@ -10,7 +10,7 @@ import Foundation
 enum CredentialsError: Error, LocalizedError {
   case invalidKeySize
   case invalidIVSize
-  case initializationFailed
+  case initializationIVFailed
 
   var errorDescription: String? {
     switch self {
@@ -18,8 +18,8 @@ enum CredentialsError: Error, LocalizedError {
       return "Invalid key size, expected 16 bytes"
     case .invalidIVSize:
       return "Invalid IV size, expected 16 bytes"
-    case .initializationFailed:
-      return "Credentials initialization failed"
+    case .initializationIVFailed:
+      return "Failed to initialize IV"
     }
   }
 }

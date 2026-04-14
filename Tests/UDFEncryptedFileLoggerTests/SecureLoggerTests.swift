@@ -13,7 +13,7 @@ import Foundation
 struct SecureLoggerTests {
   var logger: SecureLogger
   var memoryStorage: MemoryStorage
-  let maxSize = 128
+  let maxSize = 256
   let key: String
   
   init() throws {
@@ -25,7 +25,7 @@ struct SecureLoggerTests {
     
     self.key = key
     self.memoryStorage = memoryStorage
-    logger = SecureLogger(cipher: chiper, storage: memoryStorage)
+    logger = SecureLogger(cipher: chiper, storage: memoryStorage, writeMode: .binary, releaseFileRatio: 0.2)
   }
   
   @Test("Log data to empty storage")
@@ -45,7 +45,7 @@ struct SecureLoggerTests {
     let encryptedData = memoryStorage.collectedData
     let decryptedData = try logger.cipher.decode(data: encryptedData)
     
-    let decryptedText = (String(data: decryptedData, encoding: .ascii) ?? "").removeNullPadding()
+    let decryptedText = (String(data: decryptedData, encoding: .utf8) ?? "").removeNullPadding()
     
     #expect(decryptedText == expectedResult, "should match encrypted and decrypted text")
   }
@@ -60,7 +60,7 @@ struct SecureLoggerTests {
       "Test \"Log data to storage\" started",
       "Test \"Data storage collect new data\" started",
     ]
-    let expectedResult = "cos14.0Test \"Log data to storage\" startedTest \"Data storage collect new data\" started"
+    let expectedResult = "ileLoggerTests.xctest'Suite AESEncriptionTests startedTarget Platform: arm64e-apple-macos14.0Test \"Log data to storage\" startedTest \"Data storage collect new data\" started"
     
     for log in logs {
       guard let logData = log.data(using: .utf8) else {

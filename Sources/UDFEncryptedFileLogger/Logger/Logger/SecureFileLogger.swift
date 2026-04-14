@@ -10,30 +10,37 @@ import Foundation
 struct SecureLogger: Loggable {
   let cipher: StreamCipherable
   var storage: DataStorable
+  let writeMode: WriteMode
   let releaseFileRatio: Double
   
   init(
     cipher: StreamCipherable,
     storage: DataStorable,
+    writeMode: WriteMode = .binary,
     releaseFileRatio: Double = 0.4
   ) {
     self.cipher = cipher
     self.storage = storage
-    self.releaseFileRatio = max(1, min(0, releaseFileRatio))
+    self.writeMode = writeMode
+    self.releaseFileRatio = min(1, max(0, releaseFileRatio))
   }
   
   mutating func log(data: Data) throws {
-    var encodedData = try cipher.encode(data: data)
-    encodedData.append(try cipher.finish())
+    var encryptedData = try cipher.encode(data: data)
+    encryptedData.append(try cipher.finish())
+    let transformedData = try writeMode.encode(encryptedData)
     
     do {
-      try storage.append(data: encodedData)
+      try storage.append(data: transformedData)
     } catch StorageError.sizeOverflow {
       var releaseByteSize = Int(Double(storage.size) * releaseFileRatio)
-      releaseByteSize -= releaseByteSize % cipher.blockSize
+      
+      let saleBlock = writeMode == .hex ? 2 : 1
+      let blockSize = cipher.blockSize * saleBlock
+      releaseByteSize -= releaseByteSize % blockSize
       
       try storage.reduce(size: releaseByteSize)
-      try storage.append(data: encodedData)
+      try storage.append(data: transformedData)
     }
   }
 }
