@@ -46,7 +46,7 @@ extension AESCipher {
 private extension AESCipher.Credentials {
   static func validateIV(_ iv: [UInt8]) throws {
     if iv.count != Self.keySize {
-      throw CredentialsError.invalidKeySize
+      throw CredentialsError.invalidIVSize
     }
   }
   

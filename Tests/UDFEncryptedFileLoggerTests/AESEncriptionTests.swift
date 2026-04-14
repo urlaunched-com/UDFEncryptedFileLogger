@@ -38,7 +38,7 @@ struct AESEncriptionTests {
     let decryptedData = try chiper.decode(data: encryptedData)
     let decryptedText = (String(data: decryptedData, encoding: .utf8) ?? "")
       // Remove padding for successful string comparison
-      .replacingOccurrences(of: "\0", with: "")
+      .removeNullPadding()
     
     #expect(decryptedText == text, "should match encoded and decoded text")
   }
@@ -67,7 +67,7 @@ struct AESEncriptionTests {
     
     let decodedText = (String(data: decryptedData, encoding: .utf8) ?? "")
       // Remove padding for successful string comparison
-      .replacingOccurrences(of: "\0", with: "")
+      .removeNullPadding()
     #expect(decodedText == expectedResult, "should match encoded and decoded text")
   }
 }

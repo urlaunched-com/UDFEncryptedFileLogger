@@ -13,8 +13,8 @@ extension AESCipher {
     private var enryptor: Cryptor & Updatable
     private var decryptor: Cryptor & Updatable
     
-    var blockSize: UInt64 {
-      UInt64(AES.blockSize)
+    var blockSize: Int {
+      AES.blockSize
     }
     
     init(credentials: Credentials) throws {

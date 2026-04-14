@@ -8,7 +8,7 @@
 import Foundation
 
 /// Usage for testing purpose
-struct MemoryStorage: DataStorable {
+final class MemoryStorage: DataStorable, @unchecked Sendable {
   private(set) var collectedData: Data
   let maxSize: Int
   
@@ -24,7 +24,7 @@ struct MemoryStorage: DataStorable {
 
 // MARK: - DataStorable
 extension MemoryStorage: DataWritable {
-  mutating func append(data: Data) throws {
+  func append(data: Data) throws {
     guard size + data.count <= maxSize else {
       throw StorageError.sizeOverflow
     }
@@ -32,21 +32,21 @@ extension MemoryStorage: DataWritable {
     collectedData.append(data)
   }
   
-  mutating func rewrite(data: Data) throws {
+  func rewrite(data: Data) throws {
     collectedData = data
   }
 }
 
 // MARK: - DataCloseable
 extension MemoryStorage: DataCloseable {
-  mutating func close() throws {
+  func close() throws {
     collectedData = Data()
   }
 }
 
 // MARK: - DataCompactor
 extension MemoryStorage: DataCompactor {
-  mutating func reduce(size releaseByteSize: Int) throws {
+  func reduce(size releaseByteSize: Int) throws {
     guard releaseByteSize >= 0 else {
       throw StorageError.invalidSizeParameter
     }
