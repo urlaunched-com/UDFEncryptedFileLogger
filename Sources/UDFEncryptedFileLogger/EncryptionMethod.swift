@@ -7,5 +7,6 @@
 
 public enum EncryptionMethod {
   case plaintext
+  /// Requires a 32-byte key (AES-256) encoded in Base64
   case aesCBC(key: String)
 }

@@ -13,10 +13,10 @@ struct AESEncriptionTests {
   var initialCredentials: AESCipher.Credentials
   
   init() throws {
-    let key = "12345678901234567890123456789012"
+    let key = "qeQ2xcG1ICJN4tBemRT6zdb4zQ/W6g8vvw4FycRx3Lw="
     let iv =  "abcdef9876543210"
     
-    self.initialCredentials = try AESCipher.Credentials(key, iv: iv.bytes)
+    self.initialCredentials = try AESCipher.Credentials(base64Key: key, iv: iv.bytes)
   }
   
   @Test("Test encryption and decryption using AES-CBC method")
@@ -32,10 +32,10 @@ struct AESEncriptionTests {
     let data = try #require(text.data(using: .utf8))
 
     let encryptionProcessor = try AESCipher.CBCStreamProcessor(credentials: initialCredentials)
-    var encryptedData = try encryptionProcessor.encode(data: data)
+    var encryptedData = try encryptionProcessor.encrypt(data: data)
     encryptedData.append(try encryptionProcessor.finish())
 
-    let decryptedData = try AESCipher.CBCStreamProcessor.decode(
+    let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(
         data: encryptedData,
         key: initialCredentials.key,
         iv: initialCredentials.iv
@@ -61,11 +61,11 @@ struct AESEncriptionTests {
     var encryptedData = Data()
     for log in logs {
       let data = Data(log.utf8)
-      encryptedData.append(try encryptionProcessor.encode(data: data))
+      encryptedData.append(try encryptionProcessor.encrypt(data: data))
       encryptedData.append(try encryptionProcessor.finish())
     }
     
-    let decryptedData = try AESCipher.CBCStreamProcessor.decode(data: encryptedData, key: initialCredentials.key, iv: initialCredentials.iv)
+    let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(data: encryptedData, key: initialCredentials.key, iv: initialCredentials.iv)
     
     let decodedText = (String(data: decryptedData, encoding: .utf8) ?? "")
       // Remove padding for successful string comparison
@@ -91,7 +91,7 @@ struct AESEncriptionTests {
     var encryptedData = Data()
     for log in logs {
       let data = Data(log.utf8)
-      encryptedData.append(try encryptionProcessor.encode(data: data))
+      encryptedData.append(try encryptionProcessor.encrypt(data: data))
       encryptedData.append(try encryptionProcessor.finish())
     }
     
@@ -99,7 +99,7 @@ struct AESEncriptionTests {
     let offset = encryptionProcessor.blockSize * 10
     let iv = encryptedData.subdata(in: offset - encryptionProcessor.blockSize..<offset)
     encryptedData = Data(encryptedData.suffix(from: offset))
-    let decryptedData = try AESCipher.CBCStreamProcessor.decode(data: encryptedData, key: initialCredentials.key, iv: iv.byteArray)
+    let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(data: encryptedData, key: initialCredentials.key, iv: iv.byteArray)
     
     let decodedText = (String(data: decryptedData, encoding: .utf8) ?? "")
       // Remove padding for successful string comparison
@@ -112,9 +112,9 @@ struct AESEncriptionTests {
   func encryptAndDecryptEmptyData() throws {
     let data = Data()
     let encryptionProcessor = try AESCipher.CBCStreamProcessor(credentials: initialCredentials)
-    var encryptedData = try encryptionProcessor.encode(data: data)
+    var encryptedData = try encryptionProcessor.encrypt(data: data)
     encryptedData = try encryptionProcessor.finish()
-    let decryptedData = try AESCipher.CBCStreamProcessor.decode(data: encryptedData, key: initialCredentials.key, iv: initialCredentials.iv)
+    let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(data: encryptedData, key: initialCredentials.key, iv: initialCredentials.iv)
     #expect(decryptedData == data, "decrypted data should be empty, like original data")
   }
 }

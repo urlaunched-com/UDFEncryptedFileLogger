@@ -11,25 +11,29 @@ extension AESCipher {
   struct Credentials: KeyValidatable {
     let key: Array<UInt8>
     var iv: Array<UInt8>
-    static let blockSize = 16
-    static let keySize = kCCKeySizeAES256
     
-    init(_ value: String, iv: [UInt8] = Self.randomIV()) throws {
+    init(base64Key value: String, iv: [UInt8] = Self.randomIV()) throws {
+      
       try Self.validate(value)
       try Self.validateIV(iv)
       
-      self.key = value.bytes
+      let key = Data(base64Encoded: value)?.byteArray ?? []
+      self.key = key
       self.iv = iv
     }
     
     // MARK: - KeyValidatable
     static func validate(_ key: String) throws {
-      if key.bytes.count != keySize {
+      guard let keyData = Data(base64Encoded: key) else {
+        throw CredentialsError.decodingBase64Failed
+      }
+      
+      if keyData.count != AESCipher.Config.keySize {
         throw CredentialsError.invalidKeySize
       }
     }
     
-    static func randomIV(_ count: Int = Self.blockSize) -> Array<UInt8> {
+    static func randomIV(_ count: Int = AESCipher.Config.blockSize) -> Array<UInt8> {
       (0..<count).map({ _ in UInt8.random(in: 0...UInt8.max) })
     }
   }
@@ -38,8 +42,15 @@ extension AESCipher {
 // MARK: - Private
 private extension AESCipher.Credentials {
   static func validateIV(_ iv: [UInt8]) throws {
-    if iv.count != Self.blockSize {
+    if iv.count != AESCipher.Config.blockSize {
       throw CredentialsError.invalidIVSize
     }
+  }
+}
+
+extension AESCipher {
+  enum Config {
+    static let blockSize = 16
+    static let keySize = kCCKeySizeAES256
   }
 }

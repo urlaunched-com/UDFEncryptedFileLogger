@@ -10,26 +10,29 @@ import Foundation
 
 struct AESCredentialsTests {
   @Test(
-    "Initialize credentials with key",
+    "Initialize credentials with valid/invalid key size",
     arguments: [
       ("", false),
-      ("short", false),
       (String(repeating: "a", count: 16), false),
       (String(repeating: "a", count: 32), true),
-      ("01234567890123456789012345678901", true),
-      (String(repeating: "a", count: 64), false),
-      ("¡¢áéóú¡¿ÜÑáéóú¿¿", true)
+      ("EXnZXdJ3DzwvkYdsEpn+4exoerM1uoM32VsIYEFztaU=", true),
+      ("WaWUTDr9ykQBdOJqJkhYSiSAQnVtYvYyqsVSwqqGbww=", true),
+      ("8/zidRzGzMV6SRnMCSisufwJ1CCmivn0QUdl2+g5dC8=", true),
+      ("8/zidRzGzMV6SRnMCSisufwJ1CCmivn0QUdl2+g5dC89", false),
+      ("4vUVP4SBr1Jc01eXRb", false),
+      ("VGk5WaLFUoQPER79EaVHvMumNUfmf8gXd1C1gkGSvMg=4vUVP4SBr1Jc01eXRb", false),
+      (String(repeating: "a", count: 64), false)
     ]
   )
-  func testInitializeAESKey(key: String, isValid: Bool) throws {
-    let validIV = String(repeating: "a", count: AESCipher.Credentials.blockSize)
+  func testKeyWithInvalidKeySize(key: String, isValid: Bool) throws {
+    let validIV = String(repeating: "a", count: AESCipher.Config.blockSize)
     if isValid {
-      _ = try AESCipher.Credentials(key, iv: validIV.bytes)
+      _ = try AESCipher.Credentials(base64Key: key, iv: validIV.bytes)
       return
     }
     
     #expect(throws: CredentialsError.invalidKeySize) {
-      try AESCipher.Credentials(key, iv: validIV.bytes)
+      try AESCipher.Credentials(base64Key: key, iv: validIV.bytes)
     }
   }
   
@@ -48,11 +51,11 @@ struct AESCredentialsTests {
   func testInitializeAESIV(iv: String, isValid: Bool) throws {
     let validKey = String(repeating: "a", count: 32)
     if isValid {
-      _ = try AESCipher.Credentials(validKey, iv: iv.bytes)
+      _ = try AESCipher.Credentials(base64Key: validKey, iv: iv.bytes)
       return
     }
     #expect(throws: CredentialsError.invalidIVSize) {
-      try AESCipher.Credentials(validKey, iv: iv.bytes)
+      try AESCipher.Credentials(base64Key: validKey, iv: iv.bytes)
     }
   }
   

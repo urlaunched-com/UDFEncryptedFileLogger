@@ -18,7 +18,7 @@ struct SecureLoggerTests {
     let key = "12345678901234567890123456789012"
     let iv =  "abcdef9876543210"
     
-    self.initialCredentials = try AESCipher.Credentials(key, iv: iv.bytes)
+    self.initialCredentials = try AESCipher.Credentials(base64Key: key, iv: iv.bytes)
     self.memoryStorage = MemoryStorage(maxSize: maxSize)
   }
   
@@ -41,7 +41,7 @@ struct SecureLoggerTests {
     }
     
     let encryptedData = memoryStorage.collectedData
-    let decryptedData = try AESCipher.CBCStreamProcessor.decode(data: encryptedData, key: initialCredentials.key, iv: initialCredentials.iv)
+    let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(data: encryptedData, key: initialCredentials.key, iv: initialCredentials.iv)
     
     let decryptedText = (String(data: decryptedData, encoding: .utf8) ?? "").removeNullPadding()
     
@@ -72,10 +72,10 @@ struct SecureLoggerTests {
     var encryptedData = memoryStorage.collectedData
     
     // Read iv from storage
-    let iv = encryptedData.prefix(AESCipher.Credentials.blockSize).byteArray
-    encryptedData = encryptedData.subdata(in: AESCipher.Credentials.blockSize..<encryptedData.count)
+    let iv = encryptedData.prefix(AESCipher.Config.blockSize).byteArray
+    encryptedData = encryptedData.subdata(in: AESCipher.Config.blockSize..<encryptedData.count)
     
-    let decryptedData = try AESCipher.CBCStreamProcessor.decode(data: encryptedData, key: initialCredentials.key, iv: iv)
+    let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(data: encryptedData, key: initialCredentials.key, iv: iv)
     let decryptedText = (String(data: decryptedData, encoding: .utf8) ?? "").removeNullPadding()
     #expect(decryptedText == expectedResult, "decryptedData should match origin data")
   }
@@ -108,9 +108,9 @@ struct SecureLoggerTests {
     }
     
     var encryptedData = memoryStorage.collectedData
-    let iv = encryptedData.prefix(AESCipher.Credentials.blockSize).byteArray
-    encryptedData = encryptedData.subdata(in: AESCipher.Credentials.blockSize..<encryptedData.count)
-    let decryptedData = try AESCipher.CBCStreamProcessor.decode(data: encryptedData, key: initialCredentials.key, iv: iv)
+    let iv = encryptedData.prefix(AESCipher.Config.blockSize).byteArray
+    encryptedData = encryptedData.subdata(in: AESCipher.Config.blockSize..<encryptedData.count)
+    let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(data: encryptedData, key: initialCredentials.key, iv: iv)
     let decryptedText = (String(data: decryptedData, encoding: .utf8) ?? "").removeNullPadding().trimmingCharacters(in: .whitespacesAndNewlines)
     #expect(decryptedText == expectedResult, "decryptedData should match origin data")
   }

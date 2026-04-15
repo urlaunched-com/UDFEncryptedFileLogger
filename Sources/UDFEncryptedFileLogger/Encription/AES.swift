@@ -11,10 +11,12 @@ enum AESCipher {}
 
 protocol StreamCipherable {
   var blockSize: Int { get }
-  func encode(data: Data) throws -> Data
+  func encrypt(data: Data) throws -> Data
   func finish() throws -> Data
-  
-  static func decode(data: Data, key: Array<UInt8>, iv: Array<UInt8>) throws -> Data
+}
+
+protocol Decryptable {
+  static func decrypt(data: Data, key: Array<UInt8>, iv: Array<UInt8>) throws -> Data
 }
 
 protocol KeyValidatable {

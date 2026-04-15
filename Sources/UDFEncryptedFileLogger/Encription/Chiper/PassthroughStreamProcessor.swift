@@ -12,16 +12,12 @@ extension AESCipher {
       return 1
     }
     
-    func encode(data: Data) throws -> Data {
+    func encrypt(data: Data) throws -> Data {
       return data
     }
     
     func finish() throws -> Data {
       return Data()
-    }
-    
-    static func decode(data: Data, key: Array<UInt8>, iv: Array<UInt8>) throws -> Data {
-      data
     }
   }
 }

@@ -13,14 +13,14 @@ extension AESCipher {
     private var remainderData = Data()
     
     var blockSize: Int {
-      kCCBlockSizeAES128
+      Config.blockSize
     }
     
     init(credentials: Credentials) throws {
       self.credentials = credentials
     }
     
-    func encode(data: Data) throws -> Data {
+    func encrypt(data: Data) throws -> Data {
       var workingData = remainderData
       workingData.append(data)
       
@@ -55,35 +55,38 @@ extension AESCipher {
       remainderData.removeAll()
       return encryptedData
     }
-    
-    static func decode(data: Data, key: Array<UInt8>, iv: Array<UInt8>) throws -> Data {
-      guard !data.isEmpty else {
-        return Data()
-      }
-      
-      var outputBuffer = [UInt8](repeating: 0, count: data.count)
-      var numBytesDecrypted = 0
-      
-      let status = CCCrypt(
-        CCOperation(kCCDecrypt),
-        CCAlgorithm(kCCAlgorithmAES),
-        CCOptions(0),
-        key,
-        kCCKeySizeAES256,
-        iv,
-        Array(data),
-        data.count,
-        &outputBuffer,
-        outputBuffer.count,
-        &numBytesDecrypted
-      )
-      
-      guard status == kCCSuccess else {
-        throw ChiperError.decryptionFailed
-      }
-      
-      return Data(outputBuffer.prefix(numBytesDecrypted))
+  }
+}
+
+// MARK: - Decryptable
+extension AESCipher.CBCStreamProcessor: Decryptable {
+  static func decrypt(data: Data, key: Array<UInt8>, iv: Array<UInt8>) throws -> Data {
+    guard !data.isEmpty else {
+      return Data()
     }
+    
+    var outputBuffer = [UInt8](repeating: 0, count: data.count)
+    var numBytesDecrypted = 0
+    
+    let status = CCCrypt(
+      CCOperation(kCCDecrypt),
+      CCAlgorithm(kCCAlgorithmAES),
+      CCOptions(0),
+      key,
+      kCCKeySizeAES256,
+      iv,
+      Array(data),
+      data.count,
+      &outputBuffer,
+      outputBuffer.count,
+      &numBytesDecrypted
+    )
+    
+    guard status == kCCSuccess else {
+      throw ChiperError.decryptionFailed
+    }
+    
+    return Data(outputBuffer.prefix(numBytesDecrypted))
   }
 }
 
