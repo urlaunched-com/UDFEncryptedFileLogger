@@ -5,7 +5,7 @@ import UDF
 import Foundation
 import UDFMacros
 
-public class UDFFileLogger: ActionLogger, @unchecked Sendable {
+public final class UDFFileLogger: ActionLogger, @unchecked Sendable {
   
   // MARK: - ActionLogger
   public var actionFilters: [ActionFilter]
@@ -40,7 +40,7 @@ public class UDFFileLogger: ActionLogger, @unchecked Sendable {
       descrition = sensitiveAction.plainDescription
     }
     
-    if let data = descrition.data(using: .utf8) {
+    if let data = descrition.appending("\n").data(using: .utf8) {
       batcher?.collect(data)
     }
   }
@@ -48,7 +48,7 @@ public class UDFFileLogger: ActionLogger, @unchecked Sendable {
   init() {
     self.actionFilters = []
     self.actionDescriptor = StringDescribingActionDescriptor()
-    self.logger = EmptyLogger()
+    self.logger = NopLogger()
   }
 }
 
@@ -58,7 +58,7 @@ extension UDFFileLogger: BatcherDelegate {
     do {
       try logger.log(data: data)
     } catch {
-      print("[UDFFileLogger] Log failed:\(error.localizedDescription)")
+      print("[UDFFileLogger] Log failed: \(error.localizedDescription)")
     }
   }
 }

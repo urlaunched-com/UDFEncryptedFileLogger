@@ -13,26 +13,47 @@ struct AESCredentialsTests {
     "Initialize credentials with valid/invalid key size",
     arguments: [
       ("", false),
-      (String(repeating: "a", count: 16), false),
-      (String(repeating: "a", count: 32), true),
       ("EXnZXdJ3DzwvkYdsEpn+4exoerM1uoM32VsIYEFztaU=", true),
       ("WaWUTDr9ykQBdOJqJkhYSiSAQnVtYvYyqsVSwqqGbww=", true),
       ("8/zidRzGzMV6SRnMCSisufwJ1CCmivn0QUdl2+g5dC8=", true),
       ("8/zidRzGzMV6SRnMCSisufwJ1CCmivn0QUdl2+g5dC89", false),
-      ("4vUVP4SBr1Jc01eXRb", false),
-      ("VGk5WaLFUoQPER79EaVHvMumNUfmf8gXd1C1gkGSvMg=4vUVP4SBr1Jc01eXRb", false),
-      (String(repeating: "a", count: 64), false)
     ]
   )
-  func testKeyWithInvalidKeySize(key: String, isValid: Bool) throws {
-    let validIV = String(repeating: "a", count: AESCipher.Config.blockSize)
+  func testKeyWithKeySize(key: String, isValid: Bool) throws {
+    let validIV = AESCipher.Credentials.randomIV()
     if isValid {
-      _ = try AESCipher.Credentials(base64Key: key, iv: validIV.bytes)
+      #expect(throws: Never.self) {
+        try AESCipher.Credentials(base64Key: key, iv: validIV)
+      }
       return
     }
     
     #expect(throws: CredentialsError.invalidKeySize) {
-      try AESCipher.Credentials(base64Key: key, iv: validIV.bytes)
+      try AESCipher.Credentials(base64Key: key, iv: validIV)
+    }
+  }
+  
+  @Test(
+    "Initialize credentials with valid/invalid base64 key",
+    arguments: [
+      ("EXnZXdJ3DzwvkYdsEpn+4exoerM1uoM32VsIYEFztaU=", true),
+      ("WaWUTDr9ykQBdOJqJkhYSiSAQnVtYvYyqsVSwqqGbww=", true),
+      ("8/zidRzGzMV6SRnMCSisufwJ1CCmivn0QUdl2+g5dC8=", true),
+      ("8/zidRzGzMV6SRnMCSisufwJ1CCmivn0QUdl2+g5dC~d", false),
+    ]
+  )
+  func testKeyWithBase64Text(key: String, isValid: Bool) throws {
+    let validIV = AESCipher.Credentials.randomIV()
+    
+    if isValid {
+      #expect(throws: Never.self) {
+        try AESCipher.Credentials(base64Key: key, iv: validIV)
+      }
+      return
+    }
+    
+    #expect(throws: CredentialsError.decodingBase64Failed) {
+        try AESCipher.Credentials(base64Key: key, iv: validIV)
     }
   }
   
@@ -49,9 +70,11 @@ struct AESCredentialsTests {
     ]
   )
   func testInitializeAESIV(iv: String, isValid: Bool) throws {
-    let validKey = String(repeating: "a", count: 32)
+    let validKey = "EXnZXdJ3DzwvkYdsEpn+4exoerM1uoM32VsIYEFztaU="
     if isValid {
-      _ = try AESCipher.Credentials(base64Key: validKey, iv: iv.bytes)
+      #expect(throws: Never.self) {
+        try AESCipher.Credentials(base64Key: validKey, iv: iv.bytes)
+      }
       return
     }
     #expect(throws: CredentialsError.invalidIVSize) {

@@ -30,7 +30,6 @@ extension AESCipher {
       remainderData = workingData.suffix(workingData.count - fullBlockLength)
       
       let encryptedData = try encrypt(data: dataToEncrypt, key: credentials.key, iv: credentials.iv, padding: .none)
-      
       if encryptedData.count >= blockSize {
         credentials.iv = encryptedData.suffix(blockSize)
       }
@@ -52,6 +51,7 @@ extension AESCipher {
       if encryptedData.count >= blockSize {
         credentials.iv = encryptedData.suffix(blockSize)
       }
+      
       remainderData.removeAll()
       return encryptedData
     }
@@ -83,7 +83,7 @@ extension AESCipher.CBCStreamProcessor: Decryptable {
     )
     
     guard status == kCCSuccess else {
-      throw ChiperError.decryptionFailed
+      throw CipherError.decryptionFailed
     }
     
     return Data(outputBuffer.prefix(numBytesDecrypted))
@@ -136,7 +136,7 @@ private extension AESCipher.CBCStreamProcessor {
       &numBytesEncrypted
     )
     guard status == kCCSuccess else {
-      throw ChiperError.encryptionFailed
+      throw CipherError.encryptionFailed
     }
     
     let outputBytes = outputBuffer.prefix(numBytesEncrypted)

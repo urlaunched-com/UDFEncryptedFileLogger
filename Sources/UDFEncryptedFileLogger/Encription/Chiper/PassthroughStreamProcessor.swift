@@ -7,7 +7,7 @@
 import Foundation
 
 extension AESCipher {
-  class PassthroughStreamProcessor: StreamCipherable {
+  final class PassthroughStreamProcessor: StreamCipherable {
     var blockSize: Int {
       return 1
     }

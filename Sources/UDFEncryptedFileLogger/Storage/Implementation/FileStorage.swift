@@ -60,6 +60,12 @@ extension FileStorage: DataCloseable {
 // MARK: - DataCompactor
 extension FileStorage: DataCompactor {
   func reduce(size releaseByteSize: Int) throws {
+    guard size > 0 else {
+      return
+    }
+    guard releaseByteSize >= 0 else {
+      throw StorageError.invalidSizeParameter
+    }
     let data = try Data(contentsOf: fileURL, options: .mappedIfSafe)
     let newData = data.subdata(in: releaseByteSize..<data.count)
     try rewrite(data: newData)

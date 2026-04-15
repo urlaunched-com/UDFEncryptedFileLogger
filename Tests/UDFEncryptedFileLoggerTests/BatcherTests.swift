@@ -62,7 +62,7 @@ struct BatcherTests {
 
 // MARK: - Helped/Mocked classes
 private extension BatcherTests {
-  class BatcherDelegateWrapper: BatcherDelegate {
+  final class BatcherDelegateWrapper: BatcherDelegate {
     var collectedData = Data()
     
     func batcher(_ batcher: UDFEncryptedFileLogger.Batcher, didFlush data: Data) {

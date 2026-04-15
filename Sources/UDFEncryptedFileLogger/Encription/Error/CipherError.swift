@@ -1,12 +1,12 @@
 //
-//  ChiperError.swift
+//  CipherError.swift
 //  UDFEncryptedFileLogger
 //
 //  Created by Bogdan Petkanych on 10.04.2026.
 //
 import Foundation
 
-enum ChiperError: Error, LocalizedError {
+enum CipherError: Error, LocalizedError {
   case missingParameters
   case encryptionFailed
   case decryptionFailed

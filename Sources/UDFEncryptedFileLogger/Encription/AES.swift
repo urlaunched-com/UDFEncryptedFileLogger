@@ -20,5 +20,5 @@ protocol Decryptable {
 }
 
 protocol KeyValidatable {
-    static func validate(_ key: String) throws
+    static func validate(base64Key: String) throws -> Data
 }

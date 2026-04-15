@@ -7,7 +7,7 @@
 import Foundation
 
 enum CipherFactory {
-  static func chiper(
+  static func make(
     for method: EncryptionMethod,
     fileURL: URL? = nil,
     key: String? = nil
@@ -17,7 +17,7 @@ enum CipherFactory {
         return AESCipher.PassthroughStreamProcessor()
       case let .aesCBC(key):
         guard let fileURL else {
-          throw ChiperError.missingParameters
+          throw CipherError.missingParameters
         }
       
         let iv = try resolveIV(for: fileURL)
