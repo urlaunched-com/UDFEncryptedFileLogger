@@ -21,7 +21,7 @@ public extension ActionLogger where Self == UDFFileLogger {
   ) -> ActionLogger? {
     do {
       try FileManager.createFileIfNeeded(at: fileURL, permission: 0o600)
-      let writeMode = WriteMode.hex
+      let writeMode = WriteMode.bin
       let storage = try StorageFactory.fileStorage(fileURL: fileURL, maxFileSizeInMB: maxFileSizeInMB)
       let chiper = try ChiperFactory.chiper(for: encryptionMethod, writeMode: writeMode, fileURL: fileURL)
       let logger = try UDFFileLogger(

@@ -16,7 +16,7 @@ struct SecureLogger: Loggable {
   init(
     cipher: StreamCipherable,
     storage: DataStorable,
-    writeMode: WriteMode = .binary,
+    writeMode: WriteMode = .bin,
     releaseFileRatio: Double = 0.4
   ) {
     self.cipher = cipher
@@ -35,8 +35,8 @@ struct SecureLogger: Loggable {
     } catch StorageError.sizeOverflow {
       var releaseByteSize = Int(Double(storage.size) * releaseFileRatio)
       
-      let saleBlock = writeMode == .hex ? 2 : 1
-      let blockSize = cipher.blockSize * saleBlock
+      let scaleBlock = writeMode == .hex ? 2 : 1
+      let blockSize = cipher.blockSize * scaleBlock
       releaseByteSize -= releaseByteSize % blockSize
       
       try storage.reduce(size: releaseByteSize)

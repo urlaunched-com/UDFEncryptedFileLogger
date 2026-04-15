@@ -25,7 +25,7 @@ struct SecureLoggerTests {
     
     self.key = key
     self.memoryStorage = memoryStorage
-    logger = SecureLogger(cipher: chiper, storage: memoryStorage, writeMode: .binary, releaseFileRatio: 0.2)
+    logger = SecureLogger(cipher: chiper, storage: memoryStorage, writeMode: .bin, releaseFileRatio: 0.2)
   }
   
   @Test("Log data to empty storage")

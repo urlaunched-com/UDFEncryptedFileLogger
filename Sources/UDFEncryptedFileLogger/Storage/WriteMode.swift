@@ -8,7 +8,7 @@ import Foundation
 
 enum WriteMode {
   case hex
-  case binary
+  case bin
   
   func encode(_ data: Data) throws -> Data {
     switch self {
@@ -17,7 +17,7 @@ enum WriteMode {
         throw StorageError.utf8EncodingFailed
       }
       return encodedData
-    case .binary:
+    case .bin:
       return data
     }
   }

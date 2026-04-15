@@ -21,8 +21,8 @@ enum ChiperFactory {
         guard let fileURL else {
           throw ChiperError.missingParameters
         }
-      
-        let blockSize = (writeMode == .hex ? 2 : 1) * AES.blockSize
+        let scaleBlock = writeMode == .hex ? 2 : 1
+        let blockSize = scaleBlock * AES.blockSize
         var ivDataHex = try? FileManager.default.read(at: fileURL, upToCount: blockSize)
         if ivDataHex == nil {
           ivDataHex = try writeMode.encode(Data(AES.randomIV(AES.blockSize)))
