@@ -5,7 +5,6 @@
 //  Created by Bogdan Petkanych on 09.04.2026.
 //
 import Foundation
-import CryptoSwift
 
 enum ChiperFactory {
   static func chiper(
@@ -22,20 +21,19 @@ enum ChiperFactory {
           throw ChiperError.missingParameters
         }
         let scaleBlock = writeMode == .hex ? 2 : 1
-        let blockSize = scaleBlock * AES.blockSize
-        var ivDataHex = try? FileManager.default.read(at: fileURL, upToCount: blockSize)
-        if ivDataHex == nil {
-          ivDataHex = try writeMode.encode(Data(AES.randomIV(AES.blockSize)))
+        let blockSize = scaleBlock * AESCipher.Credentials.blockSize
+        var ivData = try? FileManager.default.read(at: fileURL, upToCount: blockSize)
+        if ivData == nil {
+          ivData = try writeMode.encode(Data(AESCipher.Credentials.randomIV(AESCipher.Credentials.blockSize)))
         }
       
-        guard let ivDataHex, let ivDataHexText = String(data: ivDataHex, encoding: .utf8) else {
+        guard let ivData else {
           throw CredentialsError.initializationIVFailed
         }
       
-        let ivData = Data(hex: ivDataHexText)
         let credentials = try AESCipher.Credentials(key, iv: ivData.byteArray)
         if try FileManager.default.isFileEmpty(fileURL) {
-          try ivDataHex.write(to: fileURL)
+          try ivData.write(to: fileURL)
         }
       
         return try AESCipher.CBCStreamProcessor(credentials: credentials)

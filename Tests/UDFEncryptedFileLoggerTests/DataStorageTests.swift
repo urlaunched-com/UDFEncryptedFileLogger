@@ -8,7 +8,6 @@
 import Testing
 @testable import UDFEncryptedFileLogger
 import Foundation
-import CryptoSwift
 
 @Suite
 struct DataStorageTests {
