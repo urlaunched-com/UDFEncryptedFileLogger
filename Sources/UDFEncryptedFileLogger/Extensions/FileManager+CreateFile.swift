@@ -7,26 +7,26 @@
 import Foundation
 
 extension FileManager {
-  @discardableResult
-  static func createFileIfNeeded(at url: URL, permission: Int = 0o600) throws -> Bool {
-    let fm = FileManager.default
-    
-    let directory = url.deletingLastPathComponent()
-    if !fm.fileExists(atPath: directory.path) {
-      try fm.createDirectory(at: directory, withIntermediateDirectories: true)
-    }
+    @discardableResult
+    static func createFileIfNeeded(at url: URL, permission: Int = 0o600) throws -> Bool {
+        let fm = FileManager.default
 
-    if !fm.fileExists(atPath: url.path) {
-      let attributes: [FileAttributeKey: Any] = [
-        .posixPermissions: permission,
-        .protectionKey: FileProtectionType.completeUntilFirstUserAuthentication
-      ]
-      let created = fm.createFile(atPath: url.path, contents: nil, attributes: attributes)
-      if !created {
-        throw FileError.creationFailed(url)
-      }
+        let directory = url.deletingLastPathComponent()
+        if !fm.fileExists(atPath: directory.path) {
+            try fm.createDirectory(at: directory, withIntermediateDirectories: true)
+        }
+
+        if !fm.fileExists(atPath: url.path) {
+            let attributes: [FileAttributeKey: Any] = [
+                .posixPermissions: permission,
+                .protectionKey: FileProtectionType.completeUntilFirstUserAuthentication,
+            ]
+            let created = fm.createFile(atPath: url.path, contents: nil, attributes: attributes)
+            if !created {
+                throw FileError.creationFailed(url)
+            }
+        }
+
+        return fm.fileExists(atPath: url.path)
     }
-    
-    return fm.fileExists(atPath: url.path)
-  }
 }

@@ -6,5 +6,5 @@
 //
 
 protocol DataCloseable: Sendable {
-  mutating func close() throws
+    mutating func close() throws
 }

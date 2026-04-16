@@ -6,5 +6,5 @@
 //
 
 protocol DataStorable: DataWritable, DataCompactor, DataCloseable {
-  var size: Int { get }
+    var size: Int { get }
 }

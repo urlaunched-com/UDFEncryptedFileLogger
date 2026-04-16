@@ -8,6 +8,6 @@
 import Foundation
 
 protocol DataWritable: Sendable {
-  mutating func append(data: Data) throws
-  mutating func rewrite(data: Data) throws
+    mutating func append(data: Data) throws
+    mutating func rewrite(data: Data) throws
 }

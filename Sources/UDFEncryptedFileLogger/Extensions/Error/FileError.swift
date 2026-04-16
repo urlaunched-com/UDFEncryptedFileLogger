@@ -7,12 +7,12 @@
 import Foundation
 
 enum FileError: LocalizedError {
-  case creationFailed(URL)
-  
-  var errorDescription: String? {
-    switch self {
-    case .creationFailed(let url):
-      return "Failed to create file at: \(url.path)"
+    case creationFailed(URL)
+
+    var errorDescription: String? {
+        switch self {
+        case let .creationFailed(url):
+            "Failed to create file at: \(url.path)"
+        }
     }
-  }
 }

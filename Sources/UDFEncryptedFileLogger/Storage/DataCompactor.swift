@@ -6,5 +6,5 @@
 //
 
 protocol DataCompactor {
-  mutating func reduce(size releaseByteSize: Int) throws
+    mutating func reduce(size releaseByteSize: Int) throws
 }

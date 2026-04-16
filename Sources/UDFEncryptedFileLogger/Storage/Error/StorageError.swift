@@ -8,21 +8,21 @@
 import Foundation
 
 enum StorageError: Error, LocalizedError {
-  case sizeOverflow
-  case initializationFailed
-  case invalidSizeParameter
-  case utf8EncodingFailed
+    case sizeOverflow
+    case initializationFailed
+    case invalidSizeParameter
+    case utf8EncodingFailed
 
-  var errorDescription: String? {
-    switch self {
-    case .sizeOverflow:
-      return "Storage size limit exceeded"
-    case .initializationFailed:
-      return "Storage initialization failed"
-    case .invalidSizeParameter:
-      return "Invalid size parameter provided"
-    case .utf8EncodingFailed:
-      return "Failed to encode string to UTF8"
+    var errorDescription: String? {
+        switch self {
+        case .sizeOverflow:
+            "Storage size limit exceeded"
+        case .initializationFailed:
+            "Storage initialization failed"
+        case .invalidSizeParameter:
+            "Invalid size parameter provided"
+        case .utf8EncodingFailed:
+            "Failed to encode string to UTF8"
+        }
     }
-  }
 }

@@ -7,7 +7,7 @@
 import Foundation
 
 extension Data {
-  var byteArray: Array<UInt8> {
-    Array(self)
-  }
+    var byteArray: [UInt8] {
+        Array(self)
+    }
 }

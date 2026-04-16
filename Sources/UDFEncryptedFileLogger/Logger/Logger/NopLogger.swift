@@ -9,7 +9,7 @@ import Foundation
 
 /// For testing purpose
 struct NopLogger: Loggable {
-  init() {}
-  
-  func log(data: Data) throws {}
+    init() {}
+
+    func log(data: Data) throws {}
 }

@@ -7,13 +7,12 @@
 
 import Foundation
 
-
 enum StorageFactory {
-  static func fileStorage(
-    fileURL: URL,
-    maxFileSizeInMB: Int
-  ) throws -> DataStorable {
-    let maxFileSize = Int(maxFileSizeInMB) * 1024 * 1024
-    return try FileStorage(fileURL: fileURL, maxFileSize: maxFileSize)
-  }
+    static func fileStorage(
+        fileURL: URL,
+        maxFileSizeInMB: Int
+    ) throws -> DataStorable {
+        let maxFileSize = ByteSize.mb(maxFileSizeInMB)
+        return try FileStorage(fileURL: fileURL, maxFileSize: maxFileSize)
+    }
 }

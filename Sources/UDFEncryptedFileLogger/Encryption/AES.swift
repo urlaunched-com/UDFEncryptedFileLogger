@@ -10,13 +10,13 @@ import Foundation
 enum AESCipher {}
 
 protocol StreamCipherable {
-  var blockSize: Int { get }
-  func encrypt(data: Data) throws -> Data
-  func finish() throws -> Data
+    var blockSize: Int { get }
+    func encrypt(data: Data) throws -> Data
+    func finish() throws -> Data
 }
 
 protocol Decryptable {
-  static func decrypt(data: Data, key: Array<UInt8>, iv: Array<UInt8>) throws -> Data
+    static func decrypt(data: Data, key: [UInt8], iv: [UInt8]) throws -> Data
 }
 
 protocol KeyValidatable {

@@ -7,5 +7,5 @@
 import Foundation
 
 protocol Loggable {
-  mutating func log(data: Data) throws
+    mutating func log(data: Data) throws
 }
