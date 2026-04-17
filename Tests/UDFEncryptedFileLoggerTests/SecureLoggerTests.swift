@@ -131,7 +131,7 @@ struct SecureLoggerTests {
             "✔ Suite SecureLoggerTests passed after 0.004 seconds.",
             "✔ Test \"Initialize credentials with IV\" with 7 test cases passed after 0.002 seconds.\n",
         ].joined(separator: "\n")
-        let storage = try prepareStorage(initialIV: initialIV, logs: storedLogs)
+        let storage = try prepareStorage(initialIV: initialIV, logs: storedLogs, storageMaxSize: ByteSize.mb(10))
 
         // New session
         let iv = storage.collectedData.subdata(in: storage.collectedData.count - AESCipher.Config.blockSize ..< storage.collectedData.count)
@@ -162,16 +162,80 @@ struct SecureLoggerTests {
         )
         let decryptedText = (String(data: decryptedData, encoding: .utf8) ?? "").removeNullPadding()
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        print(decryptedText)
+        #expect(decryptedText == expectedResult, "decryptedData should match origin data")
+    }
+
+    @Test("Verify logger overflow behavior when appending to a non-empty log storage")
+    func loggerWithNonEmptyStorageAndOverflowBehavior() throws {
+        // Previous session
+        let initialIV = AESCipher.Credentials.randomIV()
+        let storedLogs = [
+            "Test Suite 'Selected tests' started at 2026-04-17 11:07:16.007.",
+            "Test Suite 'UDFEncryptedFileLoggerTests.xctest' started at 2026-04-17 11:07:16.008.",
+            "Test Suite 'UDFEncryptedFileLoggerTests.xctest' passed at 2026-04-17 11:07:16.008.",
+            "↳ Testing Library Version: 1501",
+            "↳ Target Platform: arm64e-apple-macos14.0",
+        ].joined(separator: "\n") + "\n"
+
+        let storageMaxSize = 512
+        let storage = try prepareStorage(initialIV: initialIV, logs: storedLogs, storageMaxSize: storageMaxSize)
+
+        // New session, load encrypted data from storage
+        let iv = storage.collectedData.subdata(in: storage.collectedData.count - AESCipher.Config.blockSize ..< storage.collectedData.count)
+        var credentials = try AESCipher.Credentials(
+            base64Key: base64Key,
+            iv: iv.byteArray
+        )
+        let cipher = try AESCipher.CBCStreamProcessor(credentials: credentials)
+        var logger = SecureLogger(cipher: cipher, storage: storage, releaseFileRatio: 0.2)
+
+        let logs = [
+            "✔ Suite AESEncriptionTests passed after 0.004 seconds.",
+            "✔ Suite SecureLoggerTests passed after 0.004 seconds.",
+            "✔ Test \"Initialize credentials with IV\" with 7 test cases passed after 0.002 seconds.",
+            "✔ Test \"Initialize credentials with key\" with 7 test cases passed after 0.002 seconds.",
+            "✔ Suite AESCredentialsTests passed after 0.004 seconds.",
+            "✔ Test \"When collected data exceeds maximum size, batcher flushes data to delegate\" passed after 0.517 seconds.",
+            "✔ Test \"When interval is reached, batcher flushes collected data\" passed after 1.138 seconds.",
+            "✔ Suite BatcherTests passed after 1.141 seconds.",
+            "✔ Test run with 14 tests in 5 suites passed after 1.142 seconds.",
+            "Program ended with exit code: 0",
+        ]
+
+        let expectedResult = """
+        seconds.
+        ✔ Suite AESCredentialsTests passed after 0.004 seconds.
+        ✔ Test "When collected data exceeds maximum size, batcher flushes data to delegate" passed after 0.517 seconds.
+        ✔ Test "When interval is reached, batcher flushes collected data" passed after 1.138 seconds.
+        ✔ Suite BatcherTests passed after 1.141 seconds.
+        ✔ Test run with 14 tests in 5 suites passed after 1.142 seconds.
+        Program ended with exit code: 0
+        """
+        var appendStorageSize = 0
+        for log in logs {
+            let logData = try #require(log.appending("\n").data(using: .utf8))
+            appendStorageSize += logData.count
+            try logger.log(data: logData)
+        }
+
+        let updatedIV = storage.collectedData.subdata(in: 0 ..< AESCipher.Config.blockSize)
+        credentials = try AESCipher.Credentials(base64Key: base64Key, iv: updatedIV.byteArray)
+        let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(
+            data: storage.collectedData.subdata(in: AESCipher.Config.blockSize ..< storage.collectedData.count),
+            key: credentials.key,
+            iv: credentials.iv
+        )
+        let decryptedText = (String(data: decryptedData, encoding: .utf8) ?? "").removeNullPadding()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
         #expect(decryptedText == expectedResult, "decryptedData should match origin data")
     }
 }
 
 // MARK: - Helper
 private extension SecureLoggerTests {
-    func prepareStorage(initialIV: [UInt8], logs: String) throws -> MemoryStorage {
+    func prepareStorage(initialIV: [UInt8], logs: String, storageMaxSize: Int) throws -> MemoryStorage {
         let credentials = try AESCipher.Credentials(base64Key: base64Key, iv: initialIV)
-        let memoryStorage = MemoryStorage(maxSize: ByteSize.mb(10))
+        let memoryStorage = MemoryStorage(maxSize: storageMaxSize)
         let cipher = try AESCipher.CBCStreamProcessor(credentials: credentials)
         let storedData = try #require(logs.data(using: .utf8))
         var encryptedStoredData = try cipher.encrypt(data: storedData)
