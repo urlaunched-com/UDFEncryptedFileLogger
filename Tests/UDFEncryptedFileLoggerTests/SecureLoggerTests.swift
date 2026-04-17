@@ -24,17 +24,36 @@ struct SecureLoggerTests {
         self.defaultStorage = MemoryStorage(maxSize: maxSize)
     }
 
-    @Test("Log data to initial/empty storage")
-    func logDataToInitializedStorage() throws {
+    @Test(
+        "Log data to initial/empty storage",
+        arguments: [
+            [
+                "Test Suite 'All tests' started at 2026-04-15 18:54:16.550.",
+                "Test Suite 'Selected tests'",
+                "Test Suite 'UDFFileLoggerTests.xctest'",
+            ],
+            [
+                "◇ Test \"Verify AES-CBC stream encryption and decryption maintains data integrity\" started.",
+                "◇ Test \"Ensure data can be decrypted correctly while the stream is still active\" started.",
+                "◇ Test \"Test encryption and decryption using AES-CBC method\" started.",
+            ],
+            [
+                "◇ Test \"Data storage throws size overflow error and handles it correctly\" started.",
+                "✔ Test \"Log data to initial/empty storage\" with 2 test cases passed after 0.003 seconds.",
+                "✔ Test \"Initialize credentials with valid/invalid key size\" with 5 test cases passed after 0.003 seconds.",
+            ],
+            [
+                "Test Suite 'UDFEncryptedFileLoggerTests.xctest' passed at 2026-04-17 18:04:38.506.",
+                "Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds",
+                "Test Suite 'Selected tests' passed at 2026-04-17 18:04:38.506.",
+            ],
+        ]
+    )
+    func logDataToInitializedStorage(logs: [String]) throws {
         let cipher = try AESCipher.CBCStreamProcessor(credentials: initialCredentials)
         var logger = SecureLogger(cipher: cipher, storage: defaultStorage)
-
-        let logs = [
-            "Test Suite 'All tests' started at 2026-04-15 18:54:16.550.",
-            "Test Suite 'Selected tests'",
-            "Test Suite 'UDFFileLoggerTests.xctest'",
-        ]
         let expectedResult = logs.joined()
+
         for log in logs {
             guard let logData = log.data(using: .utf8) else {
                 continue
