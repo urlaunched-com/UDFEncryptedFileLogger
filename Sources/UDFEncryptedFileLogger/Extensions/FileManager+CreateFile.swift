@@ -29,4 +29,28 @@ extension FileManager {
 
         return fm.fileExists(atPath: url.path)
     }
+
+    @discardableResult
+    static func createCacheFileIfNeeded(key: String) throws -> URL {
+        guard let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else {
+            throw FileError.cacheDirectoryNotFound
+        }
+
+        let fileURL = cachesDirectory.appendingPathComponent(key)
+        try createFileIfNeeded(at: fileURL)
+        return fileURL
+    }
+
+    static func clearFile(at url: URL) throws {
+        let fm = FileManager.default
+        guard fm.fileExists(atPath: url.path) else {
+            return
+        }
+
+        do {
+            try Data().write(to: url, options: .atomic)
+        } catch {
+            throw FileError.clearFailed(url)
+        }
+    }
 }

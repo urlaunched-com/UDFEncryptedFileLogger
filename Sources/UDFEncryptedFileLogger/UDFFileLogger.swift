@@ -11,9 +11,9 @@ public final class UDFFileLogger: ActionLogger, @unchecked Sendable {
     public var actionDescriptor: ActionDescriptor
 
     // MARK: - Private properties
-    private let dispatchQueue = DispatchQueue(label: "udf.file.logger")
+    let dispatchQueue = DispatchQueue(label: "udf.file.logger")
     private let batcher: Batcher?
-    private var logger: Loggable
+    var logger: Loggable
 
     init(
         intervalToSync: TimeInterval = 1,

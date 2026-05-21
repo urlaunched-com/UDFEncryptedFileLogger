@@ -17,6 +17,7 @@ protocol StreamCipherable {
 
 protocol Decryptable {
     static func decrypt(data: Data, key: [UInt8], iv: [UInt8]) throws -> Data
+    func decrypt(data: Data) throws -> Data
 }
 
 protocol KeyValidatable {

@@ -9,7 +9,7 @@ import Foundation
 
 extension AESCipher {
     final class CBCStreamProcessor: StreamCipherable {
-        private var credentials: Credentials
+        var credentials: Credentials
         private var remainderData = Data()
 
         var blockSize: Int {
@@ -87,6 +87,14 @@ extension AESCipher.CBCStreamProcessor: Decryptable {
         }
 
         return Data(outputBuffer.prefix(numBytesDecrypted))
+    }
+
+    func decrypt(data: Data) throws -> Data {
+        try AESCipher.CBCStreamProcessor.decrypt(
+            data: data,
+            key: credentials.key,
+            iv: credentials.iv
+        )
     }
 }
 
