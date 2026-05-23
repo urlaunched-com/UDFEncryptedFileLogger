@@ -10,11 +10,15 @@ import Foundation
 /// Usage for testing purpose
 final class MemoryStorage: DataStorable, @unchecked Sendable {
     private(set) var collectedData: Data
-    let maxSize: Int
+    let maxSize: Int?
 
-    init(maxSize: Int, data: Data = Data()) {
+    init(data: Data = Data(), maxSize: Int? = nil) {
         self.maxSize = maxSize
-        self.collectedData = data.prefix(maxSize)
+        if let maxSize {
+            self.collectedData = data.prefix(maxSize)
+        } else {
+            self.collectedData = data
+        }
     }
 
     var size: Int {
@@ -25,7 +29,7 @@ final class MemoryStorage: DataStorable, @unchecked Sendable {
 // MARK: - DataStorable
 extension MemoryStorage: DataWritable {
     func append(data: Data) throws {
-        guard size + data.count <= maxSize else {
+        if let maxSize, size + data.count > maxSize {
             throw StorageError.sizeOverflow
         }
 

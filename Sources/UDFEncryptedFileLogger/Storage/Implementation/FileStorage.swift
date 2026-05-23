@@ -10,14 +10,14 @@ import Foundation
 struct FileStorage: DataStorable {
     var fileHandle: FileHandle
     var fileURL: URL
-    var maxFileSize: Int
+    var maxFileSize: Int?
 
     var size: Int {
         let attributes = try? FileManager.default.attributesOfItem(atPath: fileURL.path)
         return attributes?[.size] as? Int ?? .zero
     }
 
-    init(fileURL: URL, maxFileSize: Int) throws {
+    init(fileURL: URL, maxFileSize: Int? = nil) throws {
         self.fileURL = fileURL
         self.maxFileSize = maxFileSize
 
@@ -34,7 +34,7 @@ extension FileStorage: DataWritable {
     /// Data should be appended to end of file.
     /// Throws `StorageError.sizeOverrun` if appending would exceed `maxFileSize`.
     func append(data: Data) throws {
-        if size + data.count > maxFileSize {
+        if let maxFileSize, size + data.count > maxFileSize {
             throw StorageError.sizeOverflow
         }
 

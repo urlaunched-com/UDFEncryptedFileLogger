@@ -24,7 +24,7 @@ public final class EncryptedCacheSource: @unchecked Sendable {
             )
             cryptor = AESCipher.AESCryptor(credentials: credentials, padding: .zero)
             if let fileURL = Self.url(for: key, directoryName: "encrypted_data") {
-                fileStorage = try FileStorage(fileURL: fileURL, maxFileSize: ByteSize.mb(10))
+                fileStorage = try FileStorage(fileURL: fileURL)
             }
         } catch {
             print("EncryptedCacheSource: failed to initialize for key '\(key)': \(error)")

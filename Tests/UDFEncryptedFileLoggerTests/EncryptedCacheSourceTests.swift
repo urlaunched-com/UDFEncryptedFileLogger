@@ -22,7 +22,7 @@ struct EncryptedCacheSourceTests {
         cacheSource = EncryptedCacheSource(
             key: "secure_data",
             cryptor: cryptor,
-            dataStorable: MemoryStorage(maxSize: ByteSize.mb(10))
+            dataStorable: MemoryStorage()
         )
     }
 

@@ -19,7 +19,10 @@ struct DataStorageTests {
 
     @Test("Data storage throws data size overflow")
     mutating func dataStorageOverflow() throws {
-        let data = Data(repeating: 0x00, count: dataStorage.maxSize + 1)
+        guard let maxSize = dataStorage.maxSize else {
+            return
+        }
+        let data = Data(repeating: 0x00, count: maxSize + 1)
 
         #expect(
             throws: StorageError.sizeOverflow,
@@ -40,13 +43,16 @@ struct DataStorageTests {
 
     @Test("Data storage throws size overflow error and handles it correctly")
     mutating func handleDataSizeOverflowInStorage() throws {
+        guard let maxSize = dataStorage.maxSize else {
+            return
+        }
         dataStorage = MemoryStorage(
-            maxSize: maxSize,
-            data: Data(repeating: 0x00, count: maxSize)
+            data: Data(repeating: 0x00, count: maxSize),
+            maxSize: maxSize
         )
 
         let data = Data(repeating: 0x11, count: maxSize / 2)
-        var expectedCollectedData = Data(repeating: 0x00, count: dataStorage.maxSize / 2)
+        var expectedCollectedData = Data(repeating: 0x00, count: maxSize / 2)
         expectedCollectedData.append(data)
 
         do {
