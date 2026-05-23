@@ -96,7 +96,7 @@ extension EncryptedCacheSource: CacheSource {
 // MARK: - Helpers
 private extension EncryptedCacheSource {
     static func url(for key: String, directoryName: String) -> URL? {
-        FileManager.default.urls(for: .applicationDirectory, in: .userDomainMask)
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first?
             .appendingPathComponent(directoryName)
             .appendingPathComponent(key)
