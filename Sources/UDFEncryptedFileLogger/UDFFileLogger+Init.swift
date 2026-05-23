@@ -15,7 +15,7 @@ public extension ActionLogger where Self == UDFFileLogger {
 
     static func fileLogger(
         fileURL: URL,
-        maxFileSizeInMB: Int,
+        maxFileSizeInMB: Int = 50,
         encryptionMethod: EncryptionMethod = .plaintext,
         extraFilters: [ActionFilter] = []
     ) -> ActionLogger? {
@@ -34,9 +34,9 @@ public extension ActionLogger where Self == UDFFileLogger {
         }
     }
 
-    static func defaultFileLogger(
+    static func file(
         fileURL: URL,
-        maxFileSizeInMB: Int,
+        maxFileSizeInMB: Int = 50,
         encryptionMethod: EncryptionMethod = .plaintext,
         extraFilters: [ActionFilter] = []
     ) -> ActionLogger {
