@@ -20,7 +20,7 @@ struct AESEncriptionTests {
     }
 
     @Test("Test encryption and decryption using AES-CBC method")
-    func aESEncriptionData() throws {
+    func aesEncryptionData() throws {
         let logs = [
             "Reduce     DidHandleDeepLinkOpening() from DeepLinkMiddleware.swift - observe(state:) at line 42",
             "Reduce     LoadPage(id: AnyHashable(UDF.Flows.Id(value: \"QuestionnairesFlow\")), pageNumber: 1) from Common+ParticipantNavigation.swift - handleParticipantNavigation(with:) at line 28",
@@ -35,7 +35,7 @@ struct AESEncriptionTests {
         var encryptedData = try encryptionProcessor.encrypt(data: data)
         try encryptedData.append(encryptionProcessor.finish())
 
-        let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(
+        let decryptedData = try AESCipher.AESCryptor.decrypt(
             data: encryptedData,
             key: initialCredentials.key,
             iv: initialCredentials.iv
@@ -65,7 +65,7 @@ struct AESEncriptionTests {
             try encryptedData.append(encryptionProcessor.finish())
         }
 
-        let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(
+        let decryptedData = try AESCipher.AESCryptor.decrypt(
             data: encryptedData,
             key: initialCredentials.key,
             iv: initialCredentials.iv
@@ -103,7 +103,7 @@ struct AESEncriptionTests {
         let offset = encryptionProcessor.blockSize * 10
         let iv = encryptedData.subdata(in: offset - encryptionProcessor.blockSize ..< offset)
         encryptedData = Data(encryptedData.suffix(from: offset))
-        let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(data: encryptedData, key: initialCredentials.key, iv: iv.byteArray)
+        let decryptedData = try AESCipher.AESCryptor.decrypt(data: encryptedData, key: initialCredentials.key, iv: iv.byteArray)
 
         let decodedText = (String(data: decryptedData, encoding: .utf8) ?? "")
             // Remove padding for successful string comparison
@@ -118,7 +118,7 @@ struct AESEncriptionTests {
         let encryptionProcessor = try AESCipher.CBCStreamProcessor(credentials: initialCredentials)
         var encryptedData = try encryptionProcessor.encrypt(data: data)
         encryptedData = try encryptionProcessor.finish()
-        let decryptedData = try AESCipher.CBCStreamProcessor.decrypt(
+        let decryptedData = try AESCipher.AESCryptor.decrypt(
             data: encryptedData,
             key: initialCredentials.key,
             iv: initialCredentials.iv

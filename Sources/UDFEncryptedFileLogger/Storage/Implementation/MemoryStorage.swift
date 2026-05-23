@@ -59,3 +59,10 @@ extension MemoryStorage: DataCompactor {
         try rewrite(data: newData)
     }
 }
+
+// MARK: - DataReadable
+extension MemoryStorage: DataReadable {
+    func read() throws -> Data {
+        collectedData
+    }
+}

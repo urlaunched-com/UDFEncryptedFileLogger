@@ -15,11 +15,17 @@ protocol StreamCipherable {
     func finish() throws -> Data
 }
 
-protocol Decryptable {
-    static func decrypt(data: Data, key: [UInt8], iv: [UInt8]) throws -> Data
+protocol Decryptable: Sendable {
     func decrypt(data: Data) throws -> Data
+}
+
+protocol Encryptable: Sendable {
+    func encrypt(data: Data) throws -> Data
 }
 
 protocol KeyValidatable {
     static func validate(base64Key: String) throws -> Data
+    static func validate(key: [UInt8]) throws
 }
+
+typealias Cryptable = Decryptable & Encryptable

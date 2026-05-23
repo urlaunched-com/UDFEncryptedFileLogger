@@ -70,3 +70,10 @@ extension FileStorage: DataCompactor {
         try rewrite(data: newData)
     }
 }
+
+// MARK: - DataReadable
+extension FileStorage: DataReadable {
+    func read() throws -> Data {
+        try Data(contentsOf: fileURL)
+    }
+}

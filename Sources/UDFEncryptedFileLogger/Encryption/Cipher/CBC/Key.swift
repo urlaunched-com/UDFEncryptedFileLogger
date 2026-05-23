@@ -20,6 +20,12 @@ extension AESCipher {
             self.iv = iv
         }
 
+        init(key: [UInt8], iv: [UInt8] = Self.randomIV()) throws {
+            try Self.validate(key: key)
+            self.key = key
+            self.iv = iv
+        }
+
         // MARK: - KeyValidatable
         static func validate(base64Key: String) throws -> Data {
             guard let keyData = Data(base64Encoded: base64Key) else {
@@ -31,6 +37,12 @@ extension AESCipher {
             }
 
             return keyData
+        }
+
+        static func validate(key: [UInt8]) throws {
+            guard key.count == AESCipher.Config.keySize else {
+                throw CredentialsError.invalidKeySize
+            }
         }
 
         // MARK: - Internal

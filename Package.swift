@@ -16,7 +16,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/Maks-Jago/SwiftUI-UDF", from: "1.5.0"),
+        .package(url: "https://github.com/Maks-Jago/SwiftUI-UDF", from: "1.5.1-rc.6"),
         .package(url: "https://github.com/urlaunched-com/UDFMacros.git", branch: "feature/sensitiveActionMacro"),
     ],
     targets: [

@@ -1,5 +1,5 @@
 {
-  "originHash" : "5b2fbed9ab22a4fb807568d22e23f6f6ca5437c25f95447ef87f818b3c25396e",
+  "originHash" : "32844abf60ed62b00c771b8d0bfd601ef4cedc112e313e65a00262dd6a9c3b0a",
   "pins" : [
     {
       "identity" : "runtime",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Maks-Jago/SwiftUI-UDF",
       "state" : {
-        "revision" : "86d44caa3d8e53e66158cfc47398959ce2006bcf",
-        "version" : "1.5.0"
+        "revision" : "99947405f0b80aec13b2798be73c0875f1457c79",
+        "version" : "1.5.1-rc.6"
       }
     },
     {

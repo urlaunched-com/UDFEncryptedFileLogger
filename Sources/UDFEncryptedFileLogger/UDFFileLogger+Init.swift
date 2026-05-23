@@ -13,10 +13,6 @@ public extension ActionLogger where Self == UDFFileLogger {
         UDFFileLogger()
     }
 
-    static func secureCacheSource(key: String) -> UDFFileLogger {
-        UDFFileLogger(key: key)
-    }
-
     static func fileLogger(
         fileURL: URL,
         maxFileSizeInMB: Int,
