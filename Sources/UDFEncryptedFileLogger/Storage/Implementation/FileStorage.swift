@@ -22,6 +22,7 @@ struct FileStorage: DataStorable {
         self.maxFileSize = maxFileSize
 
         do {
+            try FileManager.createFileIfNeeded(at: fileURL)
             self.fileHandle = try FileHandle(forWritingTo: fileURL)
         } catch {
             throw StorageError.initializationFailed
