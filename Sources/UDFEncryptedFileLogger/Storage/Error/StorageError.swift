@@ -1,0 +1,28 @@
+//
+//  StorageError.swift
+//  UDFEncryptedFileLogger
+//
+//  Created by Bogdan Petkanych on 10.04.2026.
+//
+
+import Foundation
+
+enum StorageError: Error, LocalizedError {
+    case sizeOverflow
+    case initializationFailed
+    case invalidSizeParameter
+    case utf8EncodingFailed
+
+    var errorDescription: String? {
+        switch self {
+        case .sizeOverflow:
+            "Storage size limit exceeded"
+        case .initializationFailed:
+            "Storage initialization failed"
+        case .invalidSizeParameter:
+            "Invalid size parameter provided"
+        case .utf8EncodingFailed:
+            "Failed to encode string to UTF8"
+        }
+    }
+}

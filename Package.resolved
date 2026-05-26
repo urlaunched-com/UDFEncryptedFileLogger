@@ -1,0 +1,51 @@
+{
+  "originHash" : "32844abf60ed62b00c771b8d0bfd601ef4cedc112e313e65a00262dd6a9c3b0a",
+  "pins" : [
+    {
+      "identity" : "runtime",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/urlaunched-com/Runtime",
+      "state" : {
+        "revision" : "ea112a73f7a8772a92b125ceeaaf61f1844466bd",
+        "version" : "2.2.6"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections",
+      "state" : {
+        "revision" : "6675bc0ff86e61436e615df6fc5174e043e57924",
+        "version" : "1.4.1"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "state" : {
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
+      }
+    },
+    {
+      "identity" : "swiftui-udf",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Maks-Jago/SwiftUI-UDF",
+      "state" : {
+        "revision" : "99947405f0b80aec13b2798be73c0875f1457c79",
+        "version" : "1.5.1-rc.6"
+      }
+    },
+    {
+      "identity" : "udfmacros",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/urlaunched-com/UDFMacros.git",
+      "state" : {
+        "branch" : "feature/sensitiveActionMacro",
+        "revision" : "001196817a51bff26934e15a2665b9093cc818e8"
+      }
+    }
+  ],
+  "version" : 3
+}
